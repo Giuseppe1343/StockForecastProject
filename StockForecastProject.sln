@@ -5,6 +5,8 @@ VisualStudioVersion = 17.11.35222.181
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StockForecastProject", "StockForecastProject\StockForecastProject.csproj", "{49804B0D-72AF-4137-A106-272A9078DB00}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StockForecasting", "StockForecasting\StockForecasting.csproj", "{45421D92-CE54-40C8-9054-1059C75089F0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{49804B0D-72AF-4137-A106-272A9078DB00}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{49804B0D-72AF-4137-A106-272A9078DB00}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{49804B0D-72AF-4137-A106-272A9078DB00}.Release|Any CPU.Build.0 = Release|Any CPU
+		{45421D92-CE54-40C8-9054-1059C75089F0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{45421D92-CE54-40C8-9054-1059C75089F0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{45421D92-CE54-40C8-9054-1059C75089F0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{45421D92-CE54-40C8-9054-1059C75089F0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

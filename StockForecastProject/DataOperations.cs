@@ -9,14 +9,38 @@ using System.Threading.Tasks;
 
 namespace StockForecastProject
 {
-    public class DataOperations
+    public class DataContext
     {
-        private string _connectionString = SFPHelpers.GetConnectionString();
+        //Read the connection string from the config.txt file
+        private string _connectionString = SPFHelpers.GetConnectionString();
+        public bool IsConnectionValid { get; }
 
-        public DataOperations(string? connectionString = null)
+        public DataContext(string? connectionString = null)
         {
             if(!string.IsNullOrWhiteSpace(connectionString))
                 _connectionString = connectionString;
+            
+            Program.output.AddText("Veritabanı bağlantısı kontrol ediliyor...");
+            //Check if the connection string is valid
+            try
+            {
+                using (var connection = new SqlConnection(_connectionString))
+                {
+                    connection.Open();
+                    if (connection.State == System.Data.ConnectionState.Open)
+                        IsConnectionValid = true;
+                    connection.Close();
+                }
+            }
+            catch (Exception ex)
+            {
+                Program.output.AddError(ex.ToString());
+            }
+
+            if (IsConnectionValid)
+                Program.output.AddInfo("Veritabanı bağlantısı başarılı.");
+            else
+                Program.output.AddWarning("Veritabanı bağlantısı başarısız. Lütfen config.txt dosyasını kontrol edin.");
         }
 
         public Stock? GetStock(int id)
@@ -35,7 +59,7 @@ namespace StockForecastProject
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.ToString());
+                Program.output.AddError(ex.ToString());
             }
             return stock;
         }
