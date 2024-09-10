@@ -12,9 +12,9 @@ namespace StockForecasting.Workers
     internal static class WorkersSyncContext
     {
         internal static readonly ConcurrentDictionary<int, (Stock StockData, bool Preprocessed, bool Trained)> syncContext = new();
-        internal static readonly CancellationTokenSource cts = new();
 
         internal static (int Id,string Name) invokedStockView; 
+
         internal static readonly AutoResetEvent readData = new(false);
         internal static readonly AutoResetEvent preprocessData = new(false);
         internal static readonly AutoResetEvent trainData = new(false);
@@ -23,6 +23,7 @@ namespace StockForecasting.Workers
         internal static void InvokeSyncContext(int id, string name)
         {
             invokedStockView = (id, name);
+
             if (!syncContext.ContainsKey(id))
                 readData.Set();
             else if (syncContext[id].Preprocessed == false)
@@ -33,10 +34,6 @@ namespace StockForecasting.Workers
                 return;
 
             predictData.WaitOne();
-        }
-        internal static void CancelAll()
-        {
-            cts.Cancel();
         }
     }
 }

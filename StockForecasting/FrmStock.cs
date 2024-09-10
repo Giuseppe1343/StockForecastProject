@@ -39,7 +39,7 @@ namespace StockForecasting
             _predictionWorker = new PredictionWorker(_stocks.Count);
             _predictionWorker.ProgressChanged += PredictionWorker_ProgressChanged;
 
-            FormClosing += (s,e) => WorkersSyncContext.CancelAll();
+            FormClosing += (s, e) => BaseWorker.CancelAll();
         }
         private void PredictionWorker_ProgressChanged(object? sender, int e)
         {
@@ -66,7 +66,8 @@ namespace StockForecasting
             var name = (string)grdStocks.Rows[e.RowIndex].Cells[1].Value;
 
             var stok = InvokeStock(id, name);
-            stok.GetAwaiter().OnCompleted(() => InfoOutput($"Stok: {stok.Result.Name}, Veri Sayýsý: {stok.Result.Transactions.Count}"));
+
+            stok.GetAwaiter().OnCompleted(() => InfoOutput($"Stok: {stok.Result.Name}, Veri Sayýsý: {stok.Result.Transactions.Count}, {Environment.NewLine}, Günlük Tahmin: {stok.Result.PredictionDaily}, Günlük Gerçek: {stok.Result.ActualDaily}, {Environment.NewLine}, Haftalýk Tahmin: {stok.Result.PredictionWeekly}, Haftalýk Gerçek: {stok.Result.ActualWeekly}, {Environment.NewLine}, Aylýk Tahmin: {stok.Result.PredictionMonthly}, Aylýk Gerçek: {stok.Result.ActualMonthly}"));
         }
         private async Task<Stock> InvokeStock(int id,string name)
         {

@@ -8,16 +8,10 @@ using static StockForecasting.Workers.WorkersSyncContext;
 
 namespace StockForecasting.Workers
 {
-    internal class PreprocessWorker : Progress<int>
+    internal class PreprocessWorker : BaseWorker
     {
-        private readonly Thread _thread;
-        private readonly CancellationToken token = cts.Token;
-        private readonly int _jobLength;
-        public bool JobCompleted { get; private set; }
-
-        public PreprocessWorker(int jobLength)
+        public PreprocessWorker(int jobLength) : base(jobLength)
         {
-            _jobLength = jobLength;
             _thread = new Thread(PreprocessWorkerMain);
             _thread.Start();
         }
@@ -30,6 +24,7 @@ namespace StockForecasting.Workers
                 {
                     if (token.IsCancellationRequested)
                         return;
+
                     if (PreprocessData(sync.Value))
                         OnReport(++currProgress);
 
@@ -44,16 +39,13 @@ namespace StockForecasting.Workers
             }
             JobCompleted = true;
         }
-        private bool PreprocessData((Stock StockData, bool Preprocessed, bool Trained) data)
+        private static bool PreprocessData((Stock StockData, bool Preprocessed, bool Trained) data)
         {
             if (data.Preprocessed) return false;
+
             DataContext.PreprocessData(data.StockData);
             syncContext[data.StockData.Id] = (data.StockData, true, false);
             return true;
-        }
-        private (Stock StockData, bool Preprocessed, bool Trained) GetInvokedStock()
-        {
-            return syncContext[invokedStockView.Id];
         }
     }
 }

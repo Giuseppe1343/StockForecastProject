@@ -8,21 +8,13 @@ using static StockForecasting.Workers.WorkersSyncContext;
 
 namespace StockForecasting.Workers
 {
-    internal class PredictionWorker : Progress<int>
+    internal class PredictionWorker : BaseWorker
     {
-        private readonly Thread _thread;
-        private readonly CancellationToken token = cts.Token;
-        private readonly int _jobLength;
-        
-        public bool JobCompleted { get; private set; }
-
-        public PredictionWorker(int jobLength)
-        {
-            _jobLength = jobLength;
+        public PredictionWorker(int jobLength) : base(jobLength)
+        { 
             _thread = new Thread(PredictionWorkerMain);
             _thread.Start();
         }
-
         private void PredictionWorkerMain()
         {
             int currProgress = 0;
@@ -32,12 +24,13 @@ namespace StockForecasting.Workers
                 {
                     if (token.IsCancellationRequested)
                         return;
-                    if (DUMMYTrainData(sync.Value))
+
+                    if (TrainAndPredict(sync.Value))
                         OnReport(++currProgress);
 
                     if (trainData.WaitOne(0))
                     {
-                        if(DUMMYTrainData(GetInvokedStock()))
+                        if(TrainAndPredict(GetInvokedStock()))
                             OnReport(++currProgress);
                         predictData.Set();
                     }
@@ -45,16 +38,14 @@ namespace StockForecasting.Workers
             }
             JobCompleted = true;
         }
-        private bool DUMMYTrainData((Stock StockData, bool Preprocessed, bool Trained) data)
+        private static bool TrainAndPredict((Stock StockData, bool Preprocessed, bool Trained) data)
         {
             if (data.Trained) return false;
+
+            var forecastModel = new StockForecastModel(data.StockData);
+            forecastModel.TrainAndPredict();
             syncContext[data.StockData.Id] = (data.StockData, true, true);
-            //Thread.Sleep(1000);
             return true;
-        }
-        private (Stock StockData, bool Preprocessed, bool Trained) GetInvokedStock()
-        {
-            return syncContext[invokedStockView.Id];
         }
     }
 }

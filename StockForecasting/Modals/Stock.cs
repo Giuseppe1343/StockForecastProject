@@ -95,9 +95,9 @@
         }
 
         //Calculated
-        public (float Lower,float Upper) PredictionDaily { get; set; }
-        public (float Lower, float Upper) PredictionWeekly { get; set; }
-        public (float Lower, float Upper) PredictionMonthly { get; set; }
+        public /*(float Lower,float Upper)*/float PredictionDaily { get; set; }
+        public float PredictionWeekly { get; set; }
+        public float PredictionMonthly { get; set; }
         public float ActualDaily { get; private set; }
         public float ActualWeekly { get; private set; }
         public float ActualMonthly { get; private set; }

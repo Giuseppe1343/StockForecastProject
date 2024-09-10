@@ -1,19 +1,16 @@
 ﻿using Dapper;
 using Microsoft.Data.SqlClient;
 using StockForecasting.Modals;
+using StockForecasting.Workers;
 using static StockForecasting.Workers.WorkersSyncContext;
 
 namespace StockForecasting.Worker
 {
-    internal class DataWorker : Progress<int>
+    internal class DataWorker : BaseWorker
     {
-        private readonly Thread _thread;
-        private readonly CancellationToken token = cts.Token;
-        public bool JobCompleted { get; private set; }
-
         public DataWorker(List<StockViewModel> viewModels) 
         {
-            _thread = new Thread(() => DataWorkerMain(viewModels));
+            _thread = new Thread(() => DataWorkerMain(new List<StockViewModel>(viewModels)));
             _thread.Start();
         }
         private void DataWorkerMain(List<StockViewModel> viewModels)
@@ -28,15 +25,15 @@ namespace StockForecasting.Worker
                     {
                         if (token.IsCancellationRequested)
                             return;
-                        if (IsNewStock(viewModel.Id))
-                        {
+
+                        if (!syncContext.ContainsKey(viewModel.Id))
                             AddStock(connection, viewModel.Id, viewModel.Name);
-                        }
+
                         OnReport(++currProgress);
 
                         if (readData.WaitOne(0))
                         {
-                            if (IsNewStock(invokedStockView.Id))
+                            if (!syncContext.ContainsKey(invokedStockView.Id))
                                 AddStock(connection, invokedStockView.Id, invokedStockView.Name);
                             preprocessData.Set();
                         }
@@ -47,12 +44,9 @@ namespace StockForecasting.Worker
             catch (Exception ex)
             {
                 ErrorOutput(ex.ToString());
+                CancelAll();
             }
             JobCompleted = true;
-        }
-        private bool IsNewStock(int id)
-        {
-            return !syncContext.ContainsKey(id);
         }
         private static void AddStock(SqlConnection connection, in int id, in string name)
         {

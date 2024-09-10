@@ -7,18 +7,6 @@ using System.Threading.Tasks;
 
 namespace StockForecasting
 {
-    enum OutputChannel
-    {
-        Console,
-        MessageBox,
-        Custom
-    }
-    enum LogLevel
-    {
-        Info,
-        Error,
-        Warning,
-    }
     internal class Helpers
     {
         private readonly static Dictionary<LogLevel,(ConsoleColor Color, MessageBoxIcon Icon)> Args = new()
