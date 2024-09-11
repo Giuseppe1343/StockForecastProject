@@ -1,12 +1,6 @@
 ﻿using Dapper;
 using Microsoft.Data.SqlClient;
 using StockForecasting.Modals;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Transactions;
 
 namespace StockForecasting
 {
@@ -105,7 +99,7 @@ namespace StockForecasting
 	                        FROM (
 		                        SELECT stokno, tarih, COUNT(miktar) AS [TAmount]
 		                        FROM model_data.dbo.MergedTable
-		                        WHERE tipi = 761 AND tarih >= '2023-01-01' AND stokno IS NOT NULL
+		                        WHERE tipi = 761 AND tarih >= '2023-01-01' AND stokno IS NOT NULL AND stokno != 50438
 		                        GROUP BY tarih,stokno
 	                        ) Tb
 	                        GROUP BY stokno
@@ -114,7 +108,9 @@ namespace StockForecasting
                     ");
                     foreach (var id in validStocksId)
                     {
-                        var stock = connection.QueryFirstOrDefault<Stock>("SELECT TOP 1 stokno AS [Id], aciklama AS [Name] FROM MergedTable WHERE stokno = @id;", new { id });
+                        var stock = new Stock();
+                        stock.Id = id;
+                        //var stock = connection.QueryFirstOrDefault<Stock>("SELECT TOP 1 stokno AS [Id], aciklama AS [Name] FROM MergedTable WHERE stokno = @id;", new { id });
                         if (stock is not null)
                         {
                             stock.Transactions = connection.Query<StockTransaction>("SELECT tarih AS [TDate], SUM(COALESCE(miktar,0.0)) AS [TAmount]  FROM MergedTable WHERE tipi = 761 AND stokno = @id AND tarih >= '2023-01-01' GROUP BY tarih  ORDER BY tarih", new { id }).ToList();
@@ -142,7 +138,7 @@ namespace StockForecasting
         public static void PreprocessData(Stock stock)
         {
             var transactions = stock.Transactions;
-            for (int i = transactions.Count  - 1; i >= 1; i--)
+            for (int i = transactions.Count - 1; i >= 1; i--)
             {
                 if (transactions[i].TDate.Date.AddDays(-1) != transactions[i - 1].TDate.Date)
                 {

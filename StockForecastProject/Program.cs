@@ -42,18 +42,34 @@ namespace StockForecastProject
                     //Preprocess the all data
                     DataContext.PreprocessData(data);
 
+                    int totalDeviation = 0;
                     //Train the data
+                    var MAE = 0.0f;
+                    var RMSE = 0.0f;
                     foreach (var stock in data)
                     {
                         //Train the data
                         var model = new StockForecastModel(stock);
-                        model.TrainAndPredict();
-                        ConsoleOut.WriteInfo($"Stock {stock.DemandForecastingData.DailyData.SuccessPercentage} trained successfull");
-                        ConsoleOut.WriteInfo($"Stock {stock.DemandForecastingData.WeeklyData.SuccessPercentage} trained successfull");
-                        ConsoleOut.WriteInfo($"Stock {stock.DemandForecastingData.MonthlyData.SuccessPercentage} trained successfull");
+                        model.WindowSize = 7;
+                        model.SeriesLength = 30;
+                        //model.Horizon = 1;
+
+                        model.Train();
+
+                        var tuple = model.Evaluate();
+                        MAE += tuple.Item1;
+                        RMSE += tuple.Item2;
+
+                        //var deviation = model.Test();
+                        //totalDeviation += deviation;
                     }
-                    Console.ReadLine();
-                } while (true);
+                    totalDeviation = totalDeviation / data.Count;
+                    MAE /= data.Count;
+                    RMSE /= data.Count;
+                    //Console.WriteLine($" Total: {totalDeviation}");
+                    Console.WriteLine($"Average MAE: {MAE}");
+                    Console.WriteLine($"Average RMSE: {RMSE}");
+                } while (false);
                 //TODO : Implement the logic
             }
 

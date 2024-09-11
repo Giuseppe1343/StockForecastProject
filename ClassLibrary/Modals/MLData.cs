@@ -5,6 +5,7 @@
         private readonly List<MLInput> _data;
         private int _splitIndex;
         public int TrainCount => _splitIndex;
+        public int TestCount => _data.Count - _splitIndex;
 
         public MLData(List<MLInput> data, float splitPercentage = 0.8f)
         {
