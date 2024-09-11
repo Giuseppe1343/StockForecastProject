@@ -7,7 +7,15 @@ namespace StockForecasting
     public class StockForecastModel
     {
         private readonly StockDemandForecastingData _data;
-        public StockForecastModel(Stock stock) => _data = stock.DemandForecastingData;
+        private float _cLevel = 0.95f;
+        private int _wSizeDivisor;
+        private int _sLengthDivisor;
+        public StockForecastModel(Stock stock, int wSizeDivisor = 3, int sLengthDivisor = 1)
+        {
+            _wSizeDivisor = wSizeDivisor;
+            _sLengthDivisor = sLengthDivisor;
+            _data = stock.DemandForecastingData;
+        }
 
         public void TrainAndPredict()
         {
@@ -26,16 +34,16 @@ namespace StockForecasting
             var inputColumnName = nameof(MLInput.Value);
             var outputColumnName = nameof(MLOutput.Results);
 
-            GetHyperParameters(mlData.TrainCount, out float cLevel,out int wSize, out int sLength, out int tSize);
+            GetHyperParameters(mlData.TrainCount,out int wSize, out int sLength);
 
             var model = ml.Forecasting.ForecastBySsa(
                 outputColumnName,
                 inputColumnName,
                 windowSize: wSize,
                 seriesLength: sLength,
-                trainSize: tSize,
+                trainSize: mlData.TrainCount,
                 horizon: 1,
-                confidenceLevel: cLevel,
+                confidenceLevel: _cLevel,
                 confidenceLowerBoundColumn: nameof(MLOutput.ConfidenceLower),
                 confidenceUpperBoundColumn: nameof(MLOutput.ConfidenceUpper)
                 );
@@ -72,12 +80,11 @@ namespace StockForecasting
                 _ => throw new NotImplementedException(),
             };
         }
-        private void GetHyperParameters(in int trainSize, out float cLevel,out int wSize, out int sLength, out int tSize)
+        private void GetHyperParameters(in int trainSize, out int wSize, out int sLength)
         {
-            cLevel = .95f;
-            wSize = trainSize / 3;
-            sLength = trainSize / 2;
-            tSize = trainSize;
+            wSize = trainSize / _wSizeDivisor;
+            if (wSize < 2) wSize = 2;
+            sLength = trainSize / _sLengthDivisor;
         }
     }
 }

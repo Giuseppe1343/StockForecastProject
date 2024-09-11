@@ -6,7 +6,7 @@ using static StockForecasting.Workers.WorkersSyncContext;
 
 namespace StockForecasting.Worker
 {
-    internal class DataWorker : BaseWorker
+    public class DataWorker : BaseWorker
     {
         public DataWorker(List<StockViewModel> viewModels) 
         {
@@ -43,7 +43,7 @@ namespace StockForecasting.Worker
             }
             catch (Exception ex)
             {
-                ErrorOutput(ex.ToString());
+                MessageOutput.ErrorOutput(ex.ToString());
                 CancelAll();
             }
             JobCompleted = true;

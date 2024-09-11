@@ -30,13 +30,13 @@ namespace StockForecasting
             }
             catch (Exception ex)
             {
-                ErrorOutput(ex.ToString());
+                MessageOutput.ErrorOutput(ex.ToString());
             }
 
             if (IsConnectionValid)
-                InfoOutput("Veritabanı bağlantısı başarılı.");
+                MessageOutput.InfoOutput("Veritabanı bağlantısı başarılı.");
             else
-                WarningOutput("Veritabanı bağlantısı başarısız. Lütfen config.txt dosyasını kontrol edin.");
+                MessageOutput.WarningOutput("Veritabanı bağlantısı başarısız. Lütfen config.txt dosyasını kontrol edin.");
         }
 
         public Stock? GetStock(int id)
@@ -55,7 +55,7 @@ namespace StockForecasting
             }
             catch (Exception ex)
             {
-                ErrorOutput(ex.ToString());
+                MessageOutput.ErrorOutput(ex.ToString());
             }
             return stock;
         }
@@ -86,7 +86,7 @@ namespace StockForecasting
             }
             catch (Exception ex)
             {
-                ErrorOutput(ex.ToString());
+                MessageOutput.ErrorOutput(ex.ToString());
             }
             return stocks;
         }
@@ -126,9 +126,17 @@ namespace StockForecasting
             }
             catch (Exception ex)
             {
-                ErrorOutput(ex.ToString());
+                MessageOutput.ErrorOutput(ex.ToString());
             }
             return stocks;
+        }
+
+        public static void PreprocessData(List<Stock> stocks)
+        {
+            foreach (var stock in stocks)
+            {
+                PreprocessData(stock);
+            }
         }
 
         public static void PreprocessData(Stock stock)

@@ -1,10 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace StockForecastProject.Helpers
+namespace StockForecastProject
 {
     public static class ConsoleOut
     {
+        public static void WriteInfo(string text) => WriteColoredLine(ConsoleColor.Blue, text);
+        public static void WriteWarning(string text) => WriteColoredLine(ConsoleColor.DarkYellow, text);
+        public static void WriteError(string text) => WriteColoredLine(ConsoleColor.Red, text);
+
         /// <summary>
         /// Belirtilen renkte ve satır sonu ekleyerek metin yazdırır.
         /// </summary>

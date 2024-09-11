@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading;
 
-namespace Stok_Tahmin_Modeli.Helpers
+namespace StockForecastProject
 {
     /// <summary>
     /// Konsolda bir yükleme animasyonu gerçekleştiren sınıf.

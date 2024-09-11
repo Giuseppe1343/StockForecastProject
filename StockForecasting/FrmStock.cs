@@ -65,14 +65,22 @@ namespace StockForecasting
             var id = (int)grdStocks.Rows[e.RowIndex].Cells[0].Value;
             var name = (string)grdStocks.Rows[e.RowIndex].Cells[1].Value;
 
-            var stok = InvokeStock(id, name);
+            var stok = StockInvoker.Invoke(id, name);
 
-            stok.GetAwaiter().OnCompleted(() => InfoOutput($"Stok: {stok.Result.Name}, Veri Sayýsý: {stok.Result.Transactions.Count}, {Environment.NewLine}, Günlük Tahmin: {stok.Result.PredictionDaily}, Günlük Gerçek: {stok.Result.ActualDaily}, {Environment.NewLine}, Haftalýk Tahmin: {stok.Result.PredictionWeekly}, Haftalýk Gerçek: {stok.Result.ActualWeekly}, {Environment.NewLine}, Aylýk Tahmin: {stok.Result.PredictionMonthly}, Aylýk Gerçek: {stok.Result.ActualMonthly}"));
-        }
-        private async Task<Stock> InvokeStock(int id,string name)
-        {
-             await Task.Run(() => WorkersSyncContext.InvokeSyncContext(id, name));
-            return WorkersSyncContext.syncContext[id].StockData;
+            stok.GetAwaiter().OnCompleted(() =>
+            {
+                var stockName = stok.Result.Name;
+                var dailyPrediction = stok.Result.DemandForecastingData.DailyData.PredictionCurrent;
+                var dailyActual = stok.Result.DemandForecastingData.DailyData.ActualCurrent;
+                var dailySuccess = stok.Result.DemandForecastingData.DailyData.SuccessPercentage;
+                var weeklyPrediction = stok.Result.DemandForecastingData.WeeklyData.PredictionCurrent;
+                var weeklyActual = stok.Result.DemandForecastingData.WeeklyData.ActualCurrent;
+                var weeklySuccess = stok.Result.DemandForecastingData.WeeklyData.SuccessPercentage;
+                var monthlyPrediction = stok.Result.DemandForecastingData.MonthlyData.PredictionCurrent;
+                var monthlyActual = stok.Result.DemandForecastingData.MonthlyData.ActualCurrent;
+                var monthlySuccess = stok.Result.DemandForecastingData.MonthlyData.SuccessPercentage;
+                MessageBox.Show($"Stok Adý: {stockName}\n\nGünlük Tahmin: {dailyPrediction.ConfidenceLower[0]},{dailyPrediction.Results[0]},{dailyPrediction.ConfidenceUpper[0]}\nGünlük Gerçek: {dailyActual}\nGünlük Baþarý: %{dailySuccess}\n\nHaftalýk Tahmin: {weeklyPrediction.ConfidenceLower[0]},{weeklyPrediction.Results[0]},{weeklyPrediction.ConfidenceUpper[0]}\nHaftalýk Gerçek: {weeklyActual}\nHaftalýk Baþarý: %{weeklySuccess}\n\nAylýk Tahmin: {monthlyPrediction.ConfidenceLower[0]},{monthlyPrediction.Results[0]},{monthlyPrediction.ConfidenceUpper[0]}\nAylýk Gerçek: {monthlyActual}\nAylýk Baþarý: %{monthlySuccess}");
+            });
         }
     }
 }

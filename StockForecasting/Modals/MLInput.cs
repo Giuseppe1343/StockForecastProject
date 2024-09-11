@@ -6,8 +6,9 @@ using System.Threading.Tasks;
 
 namespace StockForecasting.Modals
 {
-    internal class PredictedResult
+    public class MLInput
     {
-        public float[] Results { get; set; }
+        public float Value { get; set; }
+        public MLInput(float value) => Value = value;
     }
 }

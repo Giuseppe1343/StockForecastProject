@@ -3,9 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.11.35222.181
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StockForecastProject", "StockForecastProject\StockForecastProject.csproj", "{49804B0D-72AF-4137-A106-272A9078DB00}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StockForecastProject", "StockForecastProject\StockForecastProject.csproj", "{49804B0D-72AF-4137-A106-272A9078DB00}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StockForecasting", "StockForecasting\StockForecasting.csproj", "{45421D92-CE54-40C8-9054-1059C75089F0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StockForecasting", "StockForecasting\StockForecasting.csproj", "{45421D92-CE54-40C8-9054-1059C75089F0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClassLibrary", "ClassLibrary\ClassLibrary.csproj", "{AA0A2230-A262-4D46-8D58-047071C2EDD5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{45421D92-CE54-40C8-9054-1059C75089F0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{45421D92-CE54-40C8-9054-1059C75089F0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{45421D92-CE54-40C8-9054-1059C75089F0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AA0A2230-A262-4D46-8D58-047071C2EDD5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AA0A2230-A262-4D46-8D58-047071C2EDD5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AA0A2230-A262-4D46-8D58-047071C2EDD5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AA0A2230-A262-4D46-8D58-047071C2EDD5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

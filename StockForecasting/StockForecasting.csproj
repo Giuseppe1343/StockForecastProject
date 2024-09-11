@@ -9,11 +9,30 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Modals\**" />
+    <Compile Remove="Workers\**" />
+    <EmbeddedResource Remove="Modals\**" />
+    <EmbeddedResource Remove="Workers\**" />
+    <None Remove="Modals\**" />
+    <None Remove="Workers\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="DataOperations.cs" />
+    <Compile Remove="ModelOperations.cs" />
+    <Compile Remove="_Enums.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
 	  <Using Static="true" Include="StockForecasting.Helpers"></Using>
     <PackageReference Include="Dapper" Version="2.1.35" />
     <PackageReference Include="Microsoft.Data.SqlClient" Version="5.2.2" />
     <PackageReference Include="Microsoft.ML" Version="3.0.1" />
     <PackageReference Include="Microsoft.ML.TimeSeries" Version="3.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ClassLibrary\ClassLibrary.csproj" />
   </ItemGroup>
 
 </Project>

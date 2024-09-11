@@ -8,9 +8,22 @@ namespace StockForecasting
         [STAThread]
         static void Main()
         {
-            //Set the output channel to MessageBox
-            Channel = OutputChannel.MessageBox;
-
+            //Subscribe to the MessageReceived event to get the log messages
+            MessageOutput.MessageReceived += (sender, e) =>
+            {
+                switch (e.Type)
+                {
+                    case LogLevel.Info:
+                        MessageBox.Show(e.Message, "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        break;
+                    case LogLevel.Error:
+                        MessageBox.Show(e.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        break;
+                    case LogLevel.Warning:
+                        MessageBox.Show(e.Message, "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                        break;
+                }
+            };
 
             // To customize application configuration such as set high DPI settings or default font,
             // see https://aka.ms/applicationconfiguration.
