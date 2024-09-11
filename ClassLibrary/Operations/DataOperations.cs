@@ -154,43 +154,12 @@ namespace StockForecasting
                     i++;
                 }
             }
-            var dailyData = new List<MLInput>();
-            var weeklyData = new List<MLInput>();
-            var monthlyData = new List<MLInput>();
 
-            var nextWeek = transactions[0].TDate.Date.AddDays(7);
-            var nextMonth = transactions[0].TDate.Date.AddMonths(1);
-
-            double weeklySum = 0;
-            double monthlySum = 0;
-
+            var mlDataList = new List<MLInput>();
             foreach (var item in transactions)
-            {
-                dailyData.Add(new MLInput((float)item.TAmount));
+                mlDataList.Add(new MLInput((float)item.TAmount));
 
-                if (item.TDate.Date >= nextWeek)
-                {
-                    weeklyData.Add(new MLInput((float)weeklySum));
-                    nextWeek = item.TDate.Date.AddDays(7);
-                    weeklySum = 0;
-                }
-                weeklySum += item.TAmount;
-
-                if (item.TDate.Date >= nextMonth)
-                {
-                    monthlyData.Add(new MLInput((float)monthlySum));
-                    nextMonth = item.TDate.Date.AddMonths(1);
-                    monthlySum = 0;
-                }
-                monthlySum += item.TAmount;
-            }
-
-            stock.DemandForecastingData = new StockDemandForecastingData
-            {
-                DailyData = new MLData(dailyData),
-                WeeklyData = new MLData(weeklyData),
-                MonthlyData = new MLData(monthlyData)
-            };
+            stock.Data = new MLData(mlDataList);
         }
     }
 }

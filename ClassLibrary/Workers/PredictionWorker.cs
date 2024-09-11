@@ -43,7 +43,7 @@ namespace StockForecasting.Workers
             if (data.Trained) return false;
 
             var forecastModel = new StockForecastModel(data.StockData);
-            forecastModel.TrainAndPredict();
+            forecastModel.Train();
             syncContext[data.StockData.Id] = (data.StockData, true, true);
             return true;
         }

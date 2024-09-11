@@ -6,9 +6,8 @@
         public int Id { get; set; }
         public string Name { get; set; }
         public List<StockTransaction> Transactions { get; set; }
-        
-        //Calculated
-        public StockDemandForecastingData DemandForecastingData { get; set; }
 
+        //Calculated
+        public MLData Data { get; set; }
     }
 }
