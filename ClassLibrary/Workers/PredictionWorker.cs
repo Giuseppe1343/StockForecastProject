@@ -42,8 +42,9 @@ namespace StockForecasting.Workers
         {
             if (data.Trained) return false;
 
-            var forecastModel = new StockForecastModel(data.StockData);
-            forecastModel.Train();
+            var forecastModel = new StockForecastMLModel(data.StockData);
+            forecastModel.Train(.85f);
+            forecastModel.Predict();
             syncContext[data.StockData.Id] = (data.StockData, true, true);
             return true;
         }

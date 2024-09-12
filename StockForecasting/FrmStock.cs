@@ -69,9 +69,8 @@ namespace StockForecasting
 
             stok.GetAwaiter().OnCompleted(() =>
             {
-                var stockName = stok.Result.Name;
-                //TODO Prediction Results
-                MessageBox.Show($"Stok Adý: {stockName}");
+                var stockForm = new FrmStockForecast(stok.Result);
+                stockForm.ShowDialog();
             });
         }
     }

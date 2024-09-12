@@ -1,5 +1,7 @@
 ﻿using StockForecasting;
 using StockForecasting.Modals;
+using System.Security.Principal;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace StockForecastProject
 {
@@ -31,45 +33,67 @@ namespace StockForecastProject
             {
                 load.Start();
                 var rawData = dataContext.GetStocks();
+                DataContext.PreprocessData(rawData);
                 load.Stop();
                 ConsoleOut.WriteInfo("Data loaded successfully");
-
+                Console.Clear();
                 do
                 {
-                    //Copy the master data to a new list
-                    var data = new List<Stock>(rawData);
+                    float IR = 0.0f;
+                    float MAE = 0.0f;
+                    double RMSE = 0.0;
+                    float UIR = 0.0f;
+                    float UMAE = 0.0f;
+                    double URMSE = 0.0;
 
-                    //Preprocess the all data
-                    DataContext.PreprocessData(data);
-
-                    int totalDeviation = 0;
-                    //Train the data
-                    var MAE = 0.0f;
-                    var RMSE = 0.0f;
-                    foreach (var stock in data)
+                    foreach (var stock in rawData)
                     {
                         //Train the data
-                        var model = new StockForecastModel(stock);
-                        model.WindowSize = 7;
-                        model.SeriesLength = 30;
-                        //model.Horizon = 1;
-
+                        var model = new StockForecastMLModel(stock);
+                        //if (model.WindowSize < 2 || model.WindowSize >= model.SeriesLength) 
+                        //    model.WindowSize = 2;
+                        //model.SeriesLength = Convert.ToInt32(stock.Data.TrainCount / s);
+                        //if (model.SeriesLength <= model.WindowSize)
+                        //{
+                        //    reset = true;
+                        //    model.SeriesLength = model.WindowSize + 1;
+                        //}
                         model.Train();
 
-                        var tuple = model.Evaluate();
-                        MAE += tuple.Item1;
-                        RMSE += tuple.Item2;
+                        IR += model.Evaluate(out var mAE, out var rMSE);
+                        UIR += model.UpdateAndEvaluate(out var uMAE, out var uRMSE);
+
+                        //ConsoleOut.WriteInfo($"MAE: {mAE} RMSE: {rMSE}");
+                        //ConsoleOut.WriteWarning($"UMAE: {uMAE} URMSE: {uRMSE}");
+                        MAE += mAE;
+                        RMSE += rMSE;
+                        UMAE += uMAE;
+                        URMSE += uRMSE;
 
                         //var deviation = model.Test();
                         //totalDeviation += deviation;
                     }
-                    totalDeviation = totalDeviation / data.Count;
-                    MAE /= data.Count;
-                    RMSE /= data.Count;
+                    IR /= rawData.Count;
+                    MAE /= rawData.Count;
+                    RMSE /= rawData.Count;
+                    UIR /= rawData.Count;
+                    UMAE /= rawData.Count;
+                    URMSE /= rawData.Count;
+                    ConsoleOut.WriteError("-------------------");
+                    ConsoleOut.WriteInfo($"MAE: {MAE} RMSE: {RMSE} IR: {IR}");
+                    ConsoleOut.WriteWarning($"UMAE: {UMAE} URMSE: {URMSE} UIR: {UIR}");
+                    //MAE /= rawData.Count;
+                    //RMSE /= rawData.Count;
+                    //if (minMAE > MAE && minRMSE > RMSE)
+                    //{
+                    //    ConsoleOut.WriteWarning($"Found C: {b}");
+                    //    minMAE = MAE;
+                    //    minRMSE = RMSE;
+                    //}
                     //Console.WriteLine($" Total: {totalDeviation}");
-                    Console.WriteLine($"Average MAE: {MAE}");
-                    Console.WriteLine($"Average RMSE: {RMSE}");
-                } while (false);
+                    //Console.WriteLine($"Average MAE: {MAE}");
+                    //Console.WriteLine($"Average RMSE: {RMSE}");
+                } while (true);
                 //TODO : Implement the logic
             }
 

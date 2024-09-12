@@ -9,5 +9,6 @@
 
         //Calculated
         public MLData Data { get; set; }
+
     }
 }

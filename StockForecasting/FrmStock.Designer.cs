@@ -62,7 +62,7 @@
             lblDescription.Name = "lblDescription";
             lblDescription.Size = new Size(784, 40);
             lblDescription.TabIndex = 2;
-            lblDescription.Text = "Lütfen Sipariş Vermek İsteğidiniz Stoğu Listeden Çift Tıklayarak Açınız. ";
+            lblDescription.Text = "Tahmin Sonuçları İçin Stoğu Listeden Çift Tıklayarak Açınız. ";
             lblDescription.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // panel1
